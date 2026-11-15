@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI Recon Scanner</title>
+  {% include "base_style.html" %}
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>AI Recon Scanner &mdash; Reports</h1>
+    <span class="muted">Educational tool &middot; authorized targets only</span>
+  </header>
+
+  <div class="card">
+    {% if reports %}
+    <div class="table-wrap">
+    <table>
+      <thead><tr><th>Date</th><th>Target</th><th>Open ports</th>
+        <th>Critical</th><th>High</th><th>Medium</th><th>Low</th><th></th></tr></thead>
+      <tbody>
+      {% for r in reports %}
+        <tr>
+          <td>{{ r.meta.started }}</td>
+          <td><code>{{ r.meta.target }}</code></td>
+          <td>{{ r.ports }}</td>
+          <td><span class="sev sev-Critical">{{ r.counts.Critical or 0 }}</span></td>
+          <td><span class="sev sev-High">{{ r.counts.High or 0 }}</span></td>
+          <td><span class="sev sev-Medium">{{ r.counts.Medium or 0 }}</span></td>
+          <td><span class="sev sev-Low">{{ r.counts.Low or 0 }}</span></td>
+          <td><a class="btn" href="/report/{{ r.name }}">Open</a></td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    </div>
+    {% else %}
+      <p>No reports yet. Run a scan first:</p>
+      <pre>python main.py scan http://127.0.0.1:8080/</pre>
+    {% endif %}
+  </div>
+</div>
+</body>
+</html>

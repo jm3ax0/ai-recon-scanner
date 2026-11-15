@@ -1,0 +1,42 @@
+<style>
+  :root {
+    --bg: #f5f6f8; --card: #ffffff; --text: #1d2330; --muted: #5f6b7a; --border: #e2e5ea;
+    --accent: #2f5bd3;
+    --critical: #b42318; --high: #e0601b; --medium: #c99a06; --low: #2e7d4f;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #12151b; --card: #1b2029; --text: #e6e9ef; --muted: #9aa4b2; --border: #2b3240;
+      --accent: #7b9cff;
+      --critical: #f2675c; --high: #f39552; --medium: #e8c24a; --low: #5cc48a;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+         font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  .wrap { max-width: 1150px; margin: 0 auto; padding: 24px 16px 60px; }
+  header { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+  h1 { font-size: 22px; margin: 0; } h2 { font-size: 17px; margin: 0 0 12px; }
+  a { color: var(--accent); }
+  .muted { color: var(--muted); }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 18px; margin-top: 16px; }
+  .grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+  .stats { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); }
+  .stat { border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; }
+  .stat b { display: block; font-size: 24px; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { font-size: 13px; color: var(--muted); font-weight: 600; }
+  .table-wrap { overflow-x: auto; }
+  .sev { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 12px; font-weight: 700; color: #fff; }
+  .sev-Critical { background: var(--critical); } .sev-High { background: var(--high); }
+  .sev-Medium { background: var(--medium); color: #1d2330; } .sev-Low { background: var(--low); }
+  details summary { cursor: pointer; color: var(--accent); }
+  details p { margin: 6px 0; }
+  code, pre { font-family: ui-monospace, Consolas, monospace; font-size: 13px; }
+  pre { white-space: pre-wrap; word-break: break-word; margin: 0; }
+  .btn { display: inline-block; padding: 6px 12px; border: 1px solid var(--border); border-radius: 6px;
+         text-decoration: none; background: var(--card); }
+  .chart-box { position: relative; height: 260px; }
+  .banner { font-size: 13px; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border); background: var(--card); margin-top: 12px; }
+</style>

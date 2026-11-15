@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Scan Report</title>
+  {% include "base_style.html" %}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+</head>
+<body>
+{% set m = report.meta %}
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Scan report: <code>{{ m.target }}</code></h1>
+      <div class="muted">{{ m.started }} &middot; {{ m.duration_s }}s &middot; {{ m.requests_sent }} HTTP requests
+        &middot; IP {{ m.ip }} ({{ m.target_kind }})</div>
+    </div>
+    {% if not standalone %}
+    <div>
+      <a class="btn" href="/">&larr; All reports</a>
+      <a class="btn" href="/report/{{ m.report_name }}.html">Export HTML</a>
+      <a class="btn" href="/report/{{ m.report_name }}.json">Export JSON</a>
+    </div>
+    {% endif %}
+  </header>
+
+  <div class="banner">Educational, detection-only results for an authorized target. Verify every finding manually.</div>
+
+  <!-- Summary numbers -->
+  <div class="card">
+    <div class="stats">
+      <div class="stat"><span class="muted">Open ports</span><b>{{ report.ports|length }}</b></div>
+      <div class="stat"><span class="muted">Findings</span><b>{{ report.findings|length }}</b></div>
+      {% for s in ["Critical", "High", "Medium", "Low"] %}
+      <div class="stat"><span class="sev sev-{{ s }}">{{ s }}</span><b>{{ report.severity_counts[s] }}</b></div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- AI summary -->
+  <div class="card">
+    <h2>AI summary <span class="muted" style="font-weight:400;font-size:13px">
+      ({{ "written by Claude (LLM)" if m.llm_used else "offline rule + ML engine" }})</span></h2>
+    <pre style="font-family:inherit;font-size:15px">{{ report.summary }}</pre>
+  </div>
+
+  <!-- Charts -->
+  <div class="grid">
+    <div class="card"><h2>Findings by severity</h2><div class="chart-box"><canvas id="sevChart"></canvas></div></div>
+    <div class="card"><h2>Open ports</h2><div class="chart-box"><canvas id="portChart"></canvas></div></div>
+  </div>
+
+  <!-- Findings table -->
+  <div class="card">
+    <h2>Findings (ranked by AI priority)</h2>
+    {% if report.findings %}
+    <div class="table-wrap">
+    <table>
+      <thead><tr><th>#</th><th>Severity</th><th>Score</th><th>Finding</th><th>Location</th></tr></thead>
+      <tbody>
+      {% for f in report.findings %}
+      <tr>
+        <td>{{ f.priority }}</td>
+        <td><span class="sev sev-{{ f.severity }}">{{ f.severity }}</span></td>
+        <td>{{ f.score }}</td>
+        <td>
+          <b>{{ f.title }}</b>
+          <details>
+            <summary>Explanation &amp; next step</summary>
+            <p><b>What:</b> {{ f.explanation }}</p>
+            <p><b>Why it matters:</b> {{ f.risk }}</p>
+            <p><b>Next step:</b> {{ f.next_step }}</p>
+            <p><b>Evidence:</b> <code>{{ f.evidence }}</code></p>
+            <p><b>Why this severity:</b> {{ f.reasons|join(", ") }}.
+               ML says {{ f.ml_prediction }} (score {{ f.ml_score }}), rules say {{ f.rule_score }}.</p>
+            {% if f.learn_more %}<p><a href="{{ f.learn_more }}" target="_blank" rel="noopener">Learn more</a></p>{% endif %}
+          </details>
+        </td>
+        <td><code>{{ f.location }}</code>{% if f.parameter %}<br><span class="muted">param: {{ f.parameter }}</span>{% endif %}</td>
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    </div>
+    {% else %}<p class="muted">No findings.</p>{% endif %}
+  </div>
+
+  <!-- Ports + paths -->
+  <div class="grid">
+    <div class="card">
+      <h2>Open ports &amp; services</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Port</th><th>Service</th><th>Version / banner</th></tr></thead>
+        <tbody>
+        {% for p in report.ports %}
+          <tr><td>{{ p.port }}</td><td>{{ p.service }}</td><td><code>{{ p.version or p.banner[:80] }}</code></td></tr>
+        {% else %}<tr><td colspan="3" class="muted">No open ports found.</td></tr>{% endfor %}
+        </tbody>
+      </table></div>
+    </div>
+    <div class="card">
+      <h2>Discovered paths</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Path</th><th>Status</th><th>Size</th></tr></thead>
+        <tbody>
+        {% for d in report.paths %}
+          <tr><td><code>{{ d.path }}</code></td><td>{{ d.status }}</td><td>{{ d.length }}</td></tr>
+        {% else %}<tr><td colspan="3" class="muted">No paths found / web scan skipped.</td></tr>{% endfor %}
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+
+  <!-- How the AI decided -->
+  <div class="card">
+    <h2>How the AI ranked these findings</h2>
+    <p class="muted">Final score = 0.6 &times; Random-Forest ML score + 0.4 &times; transparent rule score (0&ndash;10).
+       &ge;8.5 Critical &middot; &ge;6.5 High &middot; &ge;3.5 Medium &middot; else Low.
+       Feature importance learned by the model:</p>
+    <div class="table-wrap"><table>
+      <tbody>
+      {% for name, val in report.model_info.feature_importances.items() %}
+        <tr><td>{{ name }}</td><td style="width:70%">
+          <div style="background:var(--accent);height:10px;border-radius:5px;width:{{ (val * 100)|round(1) }}%"></div></td>
+          <td>{{ (val * 100)|round(1) }}%</td></tr>
+      {% endfor %}
+      </tbody>
+    </table></div>
+  </div>
+</div>
+
+<script>
+  // Data comes from the report; |tojson makes it safe to embed in JavaScript.
+  const counts = {{ report.severity_counts|tojson }};
+  const ports = {{ report.ports|map(attribute="port")|list|tojson }};
+  const services = {{ report.ports|map(attribute="service")|list|tojson }};
+  const css = getComputedStyle(document.documentElement);
+  const col = n => css.getPropertyValue(n).trim();
+  const textColor = col("--muted");
+
+  if (window.Chart) {
+    Chart.defaults.color = textColor;
+    new Chart(document.getElementById("sevChart"), {
+      type: "bar",
+      data: { labels: ["Critical", "High", "Medium", "Low"],
+              datasets: [{ data: [counts.Critical, counts.High, counts.Medium, counts.Low],
+                           backgroundColor: [col("--critical"), col("--high"), col("--medium"), col("--low")],
+                           borderRadius: 4 }] },
+      options: { maintainAspectRatio: false, plugins: { legend: { display: false } },
+                 scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } }
+    });
+    new Chart(document.getElementById("portChart"), {
+      type: "bar",
+      data: { labels: ports.map((p, i) => p + " (" + services[i] + ")"),
+              datasets: [{ data: ports.map(() => 1), backgroundColor: col("--accent"), borderRadius: 4 }] },
+      options: { indexAxis: "y", maintainAspectRatio: false, plugins: { legend: { display: false },
+                 tooltip: { callbacks: { label: c => "open" } } },
+                 scales: { x: { display: false, max: 1 } } }
+    });
+  } else {
+    document.querySelectorAll(".chart-box").forEach(b => b.innerHTML = "<p class='muted'>Charts need internet access to load Chart.js.</p>");
+  }
+</script>
+</body>
+</html>
