@@ -27,7 +27,7 @@
 
 تحتاج **Python 3.10** أو أحدث. إذا المشروع مو عندك، نزّله من GitHub:
 ```bash
-git clone https://github.com/jm3ax0/ai-recon-scanner.git
+git clone https://github.com/jm3ax0/ishtar.git
 ```
 بعدها ادخل لمجلده، وسوِّ هذي الخطوات:
 

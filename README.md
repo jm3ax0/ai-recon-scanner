@@ -52,7 +52,7 @@ Safety features built into the tool:
 ## Project structure
 
 ```
-ai-recon-scanner/
+ishtar/
 ├── main.py               # command-line entry point (scan / dashboard)
 ├── config.py             # all settings (timeouts, rate limits, allow-list)
 ├── safety.py             # authorization gate
@@ -87,11 +87,11 @@ ai-recon-scanner/
 You need **Python 3.10+**.
 
 ```bash
-git clone https://github.com/jm3ax0/ai-recon-scanner.git
+git clone https://github.com/jm3ax0/ishtar.git
 ```
 
 ```bash
-cd ai-recon-scanner
+cd ishtar
 ```
 
 ```bash
