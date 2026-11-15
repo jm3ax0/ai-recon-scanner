@@ -163,7 +163,7 @@ async def run_scan(args):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="AI-assisted recon & vulnerability scanner "
+    parser = argparse.ArgumentParser(description="Ishtar - AI-assisted recon & vulnerability scanner "
                                                  "(educational - authorized targets only)")
     sub = parser.add_subparsers(dest="command", required=True)
 

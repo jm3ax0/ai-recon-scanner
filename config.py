@@ -53,7 +53,7 @@ MAX_CONCURRENT_HTTP = 5     # parallel HTTP requests
 HTTP_RATE_LIMIT = 15        # max HTTP requests per second
 MAX_CRAWL_PAGES = 40        # stop crawling after this many pages
 MAX_RESPONSE_BYTES = 2_000_000
-USER_AGENT = "AI-Recon-Edu/1.0 (educational scanner; authorized testing only)"
+USER_AGENT = "Ishtar-Edu/1.0 (educational scanner; authorized testing only)"
 
 # URLs containing these words are NEVER visited or tested, because touching
 # them can log you out, reset a lab database or change a password.
@@ -76,5 +76,5 @@ ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "")
 DASHBOARD_HOST = "127.0.0.1"   # only reachable from your own machine
 DASHBOARD_PORT = 5050
 
-TOOL_NAME = "AI Recon Scanner"
+TOOL_NAME = "Ishtar"
 TOOL_VERSION = "1.0.0"

@@ -1,4 +1,4 @@
-# دليل AI Recon Scanner بالعربي 🇮🇶
+# دليل Ishtar (عشتار) بالعربي 🇮🇶
 
 هذا الدليل يشرحلك المشروع خطوة بخطوة: شنو يسوي، شلون تنصّبه، شلون تبني مختبر DVWA على حاسبتك، وشلون الذكاء الاصطناعي يرتّب الثغرات.
 
@@ -160,9 +160,9 @@ DVWA موقع مصمم حتى يكون ضعيف ومليان ثغرات، حتى
 **الخطوة 5: الشرح.** كل ثغرة ياخذ وياها شرح بسيط، وليش هي خطيرة، وشنو الخطوة الجاية لإصلاحها. وإذا حاط مفتاح Claude، يكتبلك ملخص كامل.
 
 ### جملة لرسالة الدافع (Motivation Letter)
-> "I built an AI-assisted vulnerability scanner in Python that converts raw security findings into CVSS-inspired feature vectors and ranks them with a hybrid of a Random-Forest classifier and a transparent rule-based score, generating plain-language explanations and remediation steps, with an optional large-language-model summary. This taught me how machine learning can support human decision-making in cybersecurity while staying explainable."
+> "I built Ishtar, an AI-assisted vulnerability scanner in Python that converts raw security findings into CVSS-inspired feature vectors and ranks them with a hybrid of a Random-Forest classifier and a transparent rule-based score, generating plain-language explanations and remediation steps, with an optional large-language-model summary. This taught me how machine learning can support human decision-making in cybersecurity while staying explainable."
 
-وبالعربي: بنيت أداة فحص أمني بالبايثون، تحوّل نتائج الفحص لأرقام مستوحاة من معيار CVSS، وترتّبها بموديل تعلم آلي (Random Forest) مدموج بقواعد شفافة، وتكتب شرح بسيط وخطوات إصلاح لكل ثغرة.
+وبالعربي: بنيت أداة فحص أمني بالبايثون اسمها عشتار (Ishtar)، تحوّل نتائج الفحص لأرقام مستوحاة من معيار CVSS، وترتّبها بموديل تعلم آلي (Random Forest) مدموج بقواعد شفافة، وتكتب شرح بسيط وخطوات إصلاح لكل ثغرة.
 
 ---
 

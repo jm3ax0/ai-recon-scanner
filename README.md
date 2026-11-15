@@ -1,10 +1,11 @@
-# AI Recon Scanner
+# Ishtar
 
 ![Python](https://img.shields.io/badge/python-3.10%2B-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Purpose](https://img.shields.io/badge/purpose-education%20%2F%20authorized%20testing-orange)
 
-An educational, AI-assisted reconnaissance and web-vulnerability scanner written in Python.
+**Ishtar** is an educational, AI-assisted reconnaissance and web-vulnerability scanner written in Python,
+named after the Mesopotamian goddess Ishtar (عشتار).
 It scans a target **you are authorized to test**, detects common weaknesses, and uses a
 machine-learning model to rank every finding by severity and explain it in plain language.
 
@@ -218,7 +219,7 @@ acts like a junior security analyst that sorts them.
    a plain-language description, and a next step. Optionally, an LLM (Claude) writes a summary.
 
 **Sentence you can use in a motivation letter:**
-> "I built an AI-assisted vulnerability scanner in Python that converts raw security findings into
+> "I built Ishtar, an AI-assisted vulnerability scanner in Python that converts raw security findings into
 > CVSS-inspired feature vectors and ranks them with a hybrid of a Random-Forest classifier and a
 > transparent rule-based score, generating plain-language explanations and remediation steps, with an
 > optional large-language-model summary. This taught me how machine learning can support human decision-making
