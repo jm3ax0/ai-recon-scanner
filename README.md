@@ -22,6 +22,8 @@ machine-learning model to rank every finding by severity and explain it in plain
 - A bug-bounty program only authorizes what is listed **in its scope**. Read the rules first.
 - This tool is **detection-only**: it does not exploit vulnerabilities, extract data, or
   brute-force passwords. Keep it that way.
+- **Use restriction notice:** this software is intended for education and for testing systems you own
+  or are explicitly authorized to test. The authors accept no responsibility for misuse.
 
 Safety features built into the tool:
 

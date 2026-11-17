@@ -1,6 +1,13 @@
 .venv/
 __pycache__/
 *.pyc
+# Scan results are personal - never commit them
 reports/*
 !reports/.gitkeep
+*.log
+
+# Secrets
 .env
+.env.*
+*.key
+*.pem
