@@ -77,6 +77,7 @@ ishtar/
 │   ├── server.py         # Flask dashboard
 │   ├── report_export.py  # HTML / JSON export
 │   └── templates/
+├── examples/demo_lab.py  # tiny local-only vulnerable app for trying the tool
 ├── wordlists/common.txt
 ├── reports/              # your scan results are saved here
 └── requirements.txt
@@ -105,6 +106,11 @@ Activate the virtual environment. On Windows (PowerShell):
 ```bash
 .\.venv\Scripts\Activate.ps1
 ```
+
+> If PowerShell says running scripts is disabled, allow local scripts once and then activate again:
+> ```bash
+> Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
+> ```
 
 On macOS / Linux:
 
@@ -156,6 +162,61 @@ python main.py dashboard
 | `--lang ar` | LLM summary in Arabic |
 | `--yes` | Skip the confirm prompt for local/private targets |
 | `-v` | Verbose logging (also written to `reports/scanner.log`) |
+
+## Example output
+
+You can reproduce this without Docker using the tiny, deliberately vulnerable demo app in
+[`examples/demo_lab.py`](examples/demo_lab.py). It listens on `127.0.0.1` only.
+
+Terminal 1, start the demo lab:
+
+```bash
+python examples/demo_lab.py
+```
+
+Terminal 2, scan it:
+
+```bash
+python main.py scan http://127.0.0.1:8099/ --ports 8099
+```
+
+Real output from that scan (after answering `yes` to the authorization prompt), with the
+progress lines shortened:
+
+```text
+[*] Scanning 1 TCP port(s) on 127.0.0.1 ...
+     8099/tcp  http           Werkzeug/3.1.9 Python/3.14.10
+
+[*] Web target: http://127.0.0.1:8099/
+[*] Crawling the site to find forms and parameters...
+    -> 2 injection point(s) found
+[*] AI: ranking findings by severity...
+
+======================================================================
+Scan of http://127.0.0.1:8099/: 1 open port(s) and 11 finding(s) (2 Critical, 1 High, 1 Medium, 7 Low).
+Fix these first:
+  1. [Critical] Exposed sensitive file: /.git/HEAD -> Remove the file from the web root or block it in the web server config, then rotate any secrets it contained.
+  2. [Critical] SQL Injection (error-based) in parameter 'id' -> Confirm manually in your lab. Fix: use parameterized queries / prepared statements and never show raw database errors to users.
+  3. [High] Reflected XSS in parameter 'q' -> Fix by HTML-encoding output (e.g. htmlspecialchars in PHP) and adding a Content-Security-Policy header.
+Remember: an automated scan is a starting point - verify every finding manually.
+======================================================================
+```
+
+Full ranked list from the saved report (`reports/<date>_127.0.0.1.json`):
+
+| # | Severity | Score | Finding |
+|---|---|---|---|
+| 1 | Critical | 9.32 | Exposed sensitive file: `/.git/HEAD` |
+| 2 | Critical | 9.31 | SQL Injection (error-based) in parameter `id` |
+| 3 | High | 6.88 | Reflected XSS in parameter `q` |
+| 4 | Medium | 4.54 | Cookie `PHPSESSID` missing flags: HttpOnly, SameSite |
+| 5 | Low | 2.76 | Sensitive-looking path found: `/admin` (HTTP 403) |
+| 6 | Low | 2.57 | Software version disclosed in `server` header |
+| 7-11 | Low | 2.03 | Missing security headers: CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy |
+
+Against DVWA (security level **Low**) you should expect the same kinds of findings: SQL injection on
+`/vulnerabilities/sqli/` (`id`), reflected XSS on `/vulnerabilities/xss_r/` (`name`), plus header,
+cookie and version-disclosure findings. Exact numbers depend on your DVWA version and settings.
 
 ### Optional: LLM summaries with Claude
 
